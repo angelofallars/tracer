@@ -14,7 +14,7 @@ T = TypeVar("T")
 class TraceBuilder:
     """Builds a trace for a single function call."""
 
-    _func_name: str
+    _function_name: str
     _attributes: dict[str, object]
     _child_traces: "list[Trace[object]]"
     _start_time: datetime
@@ -35,7 +35,7 @@ class TraceBuilder:
         self._start_time = datetime.now(tz=UTC)
         self._end_time = datetime.now(tz=UTC)
 
-        self._func_name = get_function_name()
+        self._function_name = get_function_name()
 
     def log(self, trace: "Trace[T]") -> T:
         """Captures a trace and returns its enclosed value.
@@ -125,7 +125,7 @@ class Trace(Generic[T]):
             f"{(self._duration / timedelta(milliseconds=1)) / 1000:.2f} seconds"
         )
         return {
-            "function_name": self._trace_builder._func_name,  # type: ignore
+            "function_name": self._trace_builder._function_name,  # type: ignore
             "status": self._status,
             "start_time": str(self._trace_builder._start_time),  # type: ignore
             "end_time": str(self._trace_builder._end_time),  # type: ignore
