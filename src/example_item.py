@@ -27,7 +27,7 @@ def process_request() -> Trace[Result[str, str]]:
 
 
 def get_item(id: str) -> Trace[Result[Item, str]]:
-    tb = TraceBuilder({"id": id})
+    tb = TraceBuilder({"arg.id": id})
 
     # simulate DB request delay
     time.sleep(1.25)
