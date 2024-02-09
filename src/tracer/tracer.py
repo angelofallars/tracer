@@ -18,7 +18,6 @@ class TraceBuilder:
     _attributes: dict[str, object]
     _child_traces: "list[Trace[object]]"
     _start_time: datetime
-    _end_time: datetime
 
     def __init__(self, attributes: dict[str, object] | None = None):
         """Initializes the trace builder.
@@ -33,7 +32,6 @@ class TraceBuilder:
 
         self._child_traces = []
         self._start_time = datetime.now(tz=UTC)
-        self._end_time = datetime.now(tz=UTC)
 
         self._function_name = get_function_name()
 
@@ -63,7 +61,6 @@ class TraceBuilder:
         Returns:
             Trace[T]: A new trace object
         """
-        self._end_time = datetime.now(tz=UTC)
         return Trace(self, value)
 
     def set_attribute(self, key: str, value: object) -> None:
@@ -84,6 +81,7 @@ class Trace(Generic[T]):
 
     _trace_builder: TraceBuilder
     _return_value: T
+    _end_time: datetime
     _duration: timedelta
     _status: Literal["OK", "ERROR"]
 
@@ -96,7 +94,8 @@ class Trace(Generic[T]):
         """
         self._trace_builder = trace_builder
         self._return_value = return_value
-        self._duration = trace_builder._end_time - trace_builder._start_time  # type: ignore
+        self._end_time = datetime.now(tz=UTC)
+        self._duration = self._end_time - trace_builder._start_time  # type: ignore
 
         if isinstance(return_value, Err):
             self._status = "ERROR"
@@ -118,7 +117,7 @@ class Trace(Generic[T]):
             "function_name": self._trace_builder._function_name,  # type: ignore
             "status": self._status,
             "start_time": str(self._trace_builder._start_time),  # type: ignore
-            "end_time": str(self._trace_builder._end_time),  # type: ignore
+            "end_time": str(self._end_time),
             "duration": duration_seconds,
             "attributes": self._trace_builder._attributes,  # type: ignore
             "return_value": self._return_value,
