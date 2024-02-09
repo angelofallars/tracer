@@ -78,16 +78,6 @@ class TraceBuilder:
         """
         self._attributes[key] = value
 
-    def __repr__(self) -> str:
-        return pretty_format(
-            {
-                "start_time": str(self._start_time),
-                "end_time": str(self._end_time),
-                "attributes": self._attributes,
-                "child_traces": self._child_traces,
-            },
-        )
-
 
 class Trace(Generic[T]):
     """Represents the metadata surrounding a single operation (or a function call)."""
